@@ -138,7 +138,28 @@ fun NeuroApp() {
                                     val clean = prompt.trim()
                                     if (clean.isNotEmpty()) {
                                         messages.add(ChatMessage(clean, true))
-                                        messages.add(ChatMessage(demoReply(clean, selectedTool), false))
+                                        Thread {
+    val answer = try {
+        val connection = (java.net.URL("https://purple-pine-e69c.sergejpoleev964.workers.dev/chat").openConnection() as java.net.HttpURLConnection)
+        connection.requestMethod = "POST"
+        connection.connectTimeout = 20000
+        connection.readTimeout = 60000
+        connection.doOutput = true
+        connection.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+        connection.outputStream.use {
+            it.write(org.json.JSONObject().put("message", clean).toString().toByteArray(Charsets.UTF_8))
+        }
+        val stream = if (connection.responseCode in 200..299) connection.inputStream else connection.errorStream
+        val body = stream.bufferedReader().use { it.readText() }
+        connection.disconnect()
+        org.json.JSONObject(body).optString("answer", "Сервер не прислал ответ")
+    } catch (e: Exception) {
+        "Ошибка соединения: ${e.message}"
+    }
+    android.os.Handler(android.os.Looper.getMainLooper()).post {
+        messages.add(ChatMessage(answer, false))
+    }
+}.start()
                                         prompt = ""
                                     }
                                 },
