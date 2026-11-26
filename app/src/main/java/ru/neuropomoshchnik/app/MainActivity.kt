@@ -81,10 +81,7 @@ fun NeuroApp() {
                         Text("НейроПомощник", fontSize = 21.sp, fontWeight = FontWeight.Bold, color = Color.White)
                         Text("Твой AI-помощник на каждый день", fontSize = 12.sp, color = Color(0xFFB8B3D2))
                     }
-                    Surface(color = Color(0xFF24443F), shape = RoundedCornerShape(50)) {
-    Text("", modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
-        color = Teal, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-}
+                    
                 }
 
                 Spacer(Modifier.height(22.dp))
