@@ -47,7 +47,7 @@ fun NeuroApp() {
     var selectedTool by remember { mutableStateOf("Чат") }
     val messages = remember {
         mutableStateListOf(
-            ChatMessage("Привет! Я НейроПомощник ✨\nПока я работаю в демонстрационном режиме. Напиши вопрос или выбери инструмент ниже.", false)
+            ChatMessage("Привет! Я НейроПомощник ✨\nЯ подключён к GigaChat и готов помогать вам! Напиши вопрос или выбери инструмент ниже.", false)
         )
     }
 
