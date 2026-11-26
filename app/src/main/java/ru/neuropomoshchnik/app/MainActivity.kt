@@ -132,7 +132,7 @@ fun NeuroApp() {
                             )
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Демо-режим • ответы пока примерные", color = Color(0xFF9F99B8), fontSize = 10.sp, modifier = Modifier.weight(1f))
+                            Text("Подключено к GigaChat • Ответы создаёт ИИ", color = Color(0xFF9F99B8), fontSize = 10.sp, modifier = Modifier.weight(1f))
                             Button(
                                 onClick = {
                                     val clean = prompt.trim()
@@ -177,7 +177,7 @@ fun NeuroApp() {
                 }
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    "Проверяй важную информацию: ответы демонстрационные.",
+                    "Проверяй важную информацию: ответы ИИ могут содержать ошибки.",
                     color = Color(0xFF77728F), fontSize = 10.sp,
                     modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 8.dp)
                 )
