@@ -152,7 +152,7 @@ fun NeuroApp() {
         val stream = if (connection.responseCode in 200..299) connection.inputStream else connection.errorStream
         val body = stream.bufferedReader().use { it.readText() }
         connection.disconnect()
-        org.json.JSONObject(body).optString("answer", "Сервер не прислал ответ")
+        org.json.JSONObject(body).optString("answer").ifBlank { body }
     } catch (e: Exception) {
         "Ошибка соединения: ${e.message}"
     }
