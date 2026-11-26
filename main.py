@@ -53,7 +53,7 @@ def chat(data: ChatRequest):
                 "Accept": "application/json"
             },
             json={
-                "model": "GigaChat",
+                "model": "GigaChat-2",
                 "messages": [
                     {
                         "role": "user",
