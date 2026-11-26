@@ -19,7 +19,9 @@ def home():
 
 @app.post("/chat")
 def chat(data: ChatRequest):
-    auth_key = os.environ.get("GIGACHAT_AUTH_KEY")
+    auth_key = "".join(
+        os.environ.get("GIGACHAT_AUTH_KEY", "").split()
+    )
 
     if not auth_key:
         raise HTTPException(
@@ -37,7 +39,6 @@ def chat(data: ChatRequest):
                 "Accept": "application/json"
             },
             data={"scope": "GIGACHAT_API_PERS"},
-            verify=True,
             timeout=30
         )
 
@@ -60,7 +61,6 @@ def chat(data: ChatRequest):
                     }
                 ]
             },
-            verify=True,
             timeout=60
         )
 
@@ -72,7 +72,7 @@ def chat(data: ChatRequest):
     except requests.RequestException as error:
         raise HTTPException(
             status_code=502,
-            detail=f"GigaChat connection error: {str(error)}"
+            detail=f"GigaChat connection error: {error}"
         )
     except (KeyError, ValueError):
         raise HTTPException(
