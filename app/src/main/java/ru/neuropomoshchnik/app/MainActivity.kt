@@ -140,7 +140,7 @@ fun NeuroApp() {
                                         messages.add(ChatMessage(clean, true))
                                         Thread {
     val answer = try {
-        val connection = (java.net.URL("https://purple-pine-e69c.sergejpoleev964.workers.dev/chat").openConnection() as java.net.HttpURLConnection)
+        val connection = (java.net.URL("https://neuropomoshchnikapp.onrender.com/chat").openConnection() as java.net.HttpURLConnection)
         connection.requestMethod = "POST"
         connection.connectTimeout = 20000
         connection.readTimeout = 60000
