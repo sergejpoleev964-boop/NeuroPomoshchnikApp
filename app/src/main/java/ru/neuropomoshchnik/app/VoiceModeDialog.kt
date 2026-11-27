@@ -1,6 +1,8 @@
 package ru.neuropomoshchnik.app
 
 import android.Manifest
+import android.content.Context
+import androidx.compose.runtime.LaunchedEffect
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.os.Looper
@@ -19,7 +21,9 @@ fun VoiceModeDialog(onClose: () -> Unit) {
     val context = LocalContext.current
     val status = remember { mutableStateOf("Подготовка голоса…") }
     val voices = remember { mutableStateListOf<String>() }
-    val selectedVoice = remember { mutableStateOf("") }
+    val preferences = remember { context.getSharedPreferences("voice_settings", Context.MODE_PRIVATE) }
+    val selectedVoice = remember { mutableStateOf(preferences.getString("selected_voice", "").orEmpty()) }
+    LaunchedEffect(selectedVoice.value) { preferences.edit().putString("selected_voice", selectedVoice.value).apply() }
     val active = remember { mutableStateOf(false) }
     val controllerRef = remember { mutableStateOf<VoiceController?>(null) }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
