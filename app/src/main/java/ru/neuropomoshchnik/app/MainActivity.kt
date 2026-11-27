@@ -45,13 +45,20 @@ class MainActivity : ComponentActivity() {
 fun NeuroApp() {
     var prompt by remember { mutableStateOf("") }
     var selectedTool by remember { mutableStateOf("Чат") }
+    var voiceopen by remember { mutableStateOf(false) }
+
     val messages = remember {
         mutableStateListOf(
-            ChatMessage("Привет! Я НейроПомощник ✨\nЯ подключён к GigaChat и готов помогать вам! Напиши вопрос или выбери инструмент ниже.", false)
+            ChatMessage(
+                "Привет! Я НейроПомощник ✨\nЯ подключён к GigaChat и готов помогать вам! Напиши вопрос или выбери инструмент ниже.",
+                false
+            )
         )
     }
 
-    val gradient = Brush.linearGradient(listOf(Color(0xFF6A4CFF), Color(0xFFB84BEA), Color(0xFFFF70A8)))
+    val gradient = Brush.linearGradient(
+        listOf(Color(0xFF6A4CFF), Color(0xFFB84BEA), Color(0xFFFF70A8))
+    )
 
     MaterialTheme(
         colorScheme = darkColorScheme(
@@ -62,6 +69,10 @@ fun NeuroApp() {
             onSurface = Color.White
         )
     ) {
+        if (voiceopen) {
+            VoiceModeDialog(onClose = { voiceopen = false })
+        }
+
         Box(
             modifier = Modifier.fillMaxSize().background(
                 Brush.verticalGradient(listOf(Color(0xFF211A45), Ink, Color(0xFF151326)))
@@ -74,29 +85,68 @@ fun NeuroApp() {
                         Modifier.size(48.dp).background(gradient, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.AutoAwesome, null, tint = Color.White, modifier = Modifier.size(27.dp))
+                        Icon(
+                            Icons.Default.AutoAwesome,
+                            null,
+                            tint = Color.White,
+                            modifier = Modifier.size(27.dp)
+                        )
                     }
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
-                        Text("НейроПомощник", fontSize = 21.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                        Text("Твой AI-помощник на каждый день", fontSize = 12.sp, color = Color(0xFFB8B3D2))
+                        Text(
+                            "НейроПомощник",
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Text(
+                            "Твой AI-помощник на каждый день",
+                            fontSize = 12.sp,
+                            color = Color(0xFFB8B3D2)
+                        )
                     }
-                    
                 }
 
                 Spacer(Modifier.height(22.dp))
-                Text("Чем могу помочь?", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-                Text("Задай вопрос или выбери готовый инструмент", color = Color(0xFFB8B3D2), fontSize = 13.sp)
+                Text(
+                    "Чем могу помочь?",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    "Задай вопрос или выбери готовый инструмент",
+                    color = Color(0xFFB8B3D2),
+                    fontSize = 13.sp
+                )
                 Spacer(Modifier.height(16.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ToolChip("Чат", Icons.Default.ChatBubbleOutline, selectedTool == "Чат") { selectedTool = "Чат" }
-                    ToolChip("Тексты", Icons.Default.EditNote, selectedTool == "Тексты") { selectedTool = "Тексты" }
-                    ToolChip("Перевод", Icons.Default.Translate, selectedTool == "Перевод") { selectedTool = "Перевод" }
-                    ToolChip("Идеи", Icons.Default.Lightbulb, selectedTool == "Идеи") { selectedTool = "Идеи" }
+                    ToolChip("Чат", Icons.Default.ChatBubbleOutline, selectedTool == "Чат") {
+                        selectedTool = "Чат"
+                    }
+                    ToolChip("Тексты", Icons.Default.EditNote, selectedTool == "Тексты") {
+                        selectedTool = "Тексты"
+                    }
+                    ToolChip("Перевод", Icons.Default.Translate, selectedTool == "Перевод") {
+                        selectedTool = "Перевод"
+                    }
+                    ToolChip("Идеи", Icons.Default.Lightbulb, selectedTool == "Идеи") {
+                        selectedTool = "Идеи"
+                    }
                 }
 
                 Spacer(Modifier.height(14.dp))
+                Button(
+                    onClick = { voiceopen = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Text("Голосовой разговор")
+                }
+
                 LazyColumn(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -117,7 +167,9 @@ fun NeuroApp() {
                             value = prompt,
                             onValueChange = { prompt = it },
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Напиши сообщение…", color = Color(0xFF9994B4)) },
+                            placeholder = {
+                                Text("Напиши сообщение…", color = Color(0xFF9994B4))
+                            },
                             minLines = 1,
                             maxLines = 4,
                             colors = OutlinedTextFieldDefaults.colors(
@@ -129,43 +181,80 @@ fun NeuroApp() {
                             )
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Подключено к GigaChat • Ответы создаёт ИИ", color = Color(0xFF9F99B8), fontSize = 10.sp, modifier = Modifier.weight(1f))
+                            Text(
+                                "Подключено к GigaChat • Ответы создаёт ИИ",
+                                color = Color(0xFF9F99B8),
+                                fontSize = 10.sp,
+                                modifier = Modifier.weight(1f)
+                            )
                             Button(
                                 onClick = {
                                     val clean = prompt.trim()
                                     if (clean.isNotEmpty()) {
                                         messages.add(ChatMessage(clean, true))
                                         Thread {
-    val answer = try {
-        val connection = (java.net.URL("https://neuropomoshchnikapp.onrender.com/chat").openConnection() as java.net.HttpURLConnection)
-        connection.requestMethod = "POST"
-        connection.connectTimeout = 20000
-        connection.readTimeout = 60000
-        connection.doOutput = true
-        connection.setRequestProperty("Content-Type", "application/json; charset=utf-8")
-        connection.outputStream.use {
-            it.write(org.json.JSONObject().put("message", clean).toString().toByteArray(Charsets.UTF_8))
-        }
-        val stream = if (connection.responseCode in 200..299) connection.inputStream else connection.errorStream
-        val body = stream.bufferedReader().use { it.readText() }
-        connection.disconnect()
-        org.json.JSONObject(body).optString("answer").ifBlank { body }
-    } catch (e: Exception) {
-        "Ошибка соединения: ${e.message}"
-    }
-    android.os.Handler(android.os.Looper.getMainLooper()).post {
-        messages.add(ChatMessage(answer, false))
-    }
-}.start()
+                                            val answer = try {
+                                                val connection = (
+                                                    java.net.URL(
+                                                        "https://neuropomoshchnikapp.onrender.com/chat"
+                                                    ).openConnection() as java.net.HttpURLConnection
+                                                )
+                                                connection.requestMethod = "POST"
+                                                connection.connectTimeout = 20000
+                                                connection.readTimeout = 60000
+                                                connection.doOutput = true
+                                                connection.setRequestProperty(
+                                                    "Content-Type",
+                                                    "application/json; charset=utf-8"
+                                                )
+                                                connection.outputStream.use {
+                                                    it.write(
+                                                        org.json.JSONObject()
+                                                            .put("message", clean)
+                                                            .toString()
+                                                            .toByteArray(Charsets.UTF_8)
+                                                    )
+                                                }
+                                                val stream =
+                                                    if (connection.responseCode in 200..299) {
+                                                        connection.inputStream
+                                                    } else {
+                                                        connection.errorStream
+                                                    }
+                                                val body = stream.bufferedReader().use {
+                                                    it.readText()
+                                                }
+                                                connection.disconnect()
+                                                org.json.JSONObject(body)
+                                                    .optString("answer")
+                                                    .ifBlank { body }
+                                            } catch (e: Exception) {
+                                                "Ошибка соединения: ${e.message}"
+                                            }
+                                            android.os.Handler(
+                                                android.os.Looper.getMainLooper()
+                                            ).post {
+                                                messages.add(ChatMessage(answer, false))
+                                            }
+                                        }.start()
                                         prompt = ""
                                     }
                                 },
                                 enabled = prompt.isNotBlank(),
-                                colors = ButtonDefaults.buttonColors(containerColor = Purple),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Purple
+                                ),
                                 shape = RoundedCornerShape(14.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+                                contentPadding = PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 10.dp
+                                )
                             ) {
-                                Icon(Icons.Default.Send, null, modifier = Modifier.size(17.dp))
+                                Icon(
+                                    Icons.Default.Send,
+                                    null,
+                                    modifier = Modifier.size(17.dp)
+                                )
                                 Spacer(Modifier.width(6.dp))
                                 Text("Отправить")
                             }
@@ -175,7 +264,8 @@ fun NeuroApp() {
                 Spacer(Modifier.height(12.dp))
                 Text(
                     "Проверяй важную информацию: ответы ИИ могут содержать ошибки.",
-                    color = Color(0xFF77728F), fontSize = 10.sp,
+                    color = Color(0xFF77728F),
+                    fontSize = 10.sp,
                     modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 8.dp)
                 )
             }
@@ -184,7 +274,12 @@ fun NeuroApp() {
 }
 
 @Composable
-fun ToolChip(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, selected: Boolean, onClick: () -> Unit) {
+fun ToolChip(
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
     FilterChip(
         selected = selected,
         onClick = onClick,
@@ -211,22 +306,32 @@ fun MessageBubble(message: ChatMessage) {
         Surface(
             color = if (message.fromUser) Color(0xFF5945A8) else SurfaceDark,
             shape = RoundedCornerShape(
-                topStart = 18.dp, topEnd = 18.dp,
+                topStart = 18.dp,
+                topEnd = 18.dp,
                 bottomStart = if (message.fromUser) 18.dp else 5.dp,
                 bottomEnd = if (message.fromUser) 5.dp else 18.dp
             ),
             modifier = Modifier.widthIn(max = 310.dp)
         ) {
-            Text(message.text, color = Color.White, fontSize = 14.sp, modifier = Modifier.padding(14.dp))
+            Text(
+                message.text,
+                color = Color.White,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(14.dp)
+            )
         }
     }
 }
 
 fun demoReply(input: String, tool: String): String {
     return when (tool) {
-        "Тексты" -> "Демонстрация инструмента «Тексты» ✍️\n\nЯ могу помочь составить письмо, объявление или пост. В полноценной версии подключим AI, который создаст готовый текст по твоему запросу.\n\nТвой запрос: «$input»"
-        "Перевод" -> "Демонстрация переводчика 🌍\n\nВ полноценной версии я смогу переводить текст между русским, английским, румынским и другими языками. Сейчас это пример ответа."
-        "Идеи" -> "Давай разовьём эту идею 💡\n\nВ полноценной версии AI предложит несколько вариантов, оценит плюсы и поможет составить план. Сейчас это демонстрационный ответ на запрос: «$input»"
-        else -> "Спасибо за вопрос! ✨\n\nЭто пока демонстрационный режим: настоящий AI ещё не подключён. Следующий этап — подключить сервер к AI API, чтобы ответы генерировались нейросетью.\n\nТвой запрос: «$input»"
+        "Тексты" ->
+            "Демонстрация инструмента «Тексты» ✍️\n\nЯ могу помочь составить письмо, объявление или пост. В полноценной версии подключим AI, который создаст готовый текст по твоему запросу.\n\nТвой запрос: «$input»"
+        "Перевод" ->
+            "Демонстрация переводчика 🌍\n\nВ полноценной версии я смогу переводить текст между русским, английским, румынским и другими языками. Сейчас это пример ответа."
+        "Идеи" ->
+            "Давай разовьём эту идею 💡\n\nВ полноценной версии AI предложит несколько вариантов, оценит плюсы и поможет составить план. Сейчас это демонстрационный ответ на запрос: «$input»"
+        else ->
+            "Спасибо за вопрос! ✨\n\nЭто пока демонстрационный режим: настоящий AI ещё не подключён. Следующий этап — подключить сервер к AI API, чтобы ответы генерировались нейросетью.\n\nТвой запрос: «$input»"
     }
 }
